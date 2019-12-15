@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="animate.js"></script>
+	<link rel="stylesheet" href="Homeworkstyle.css">
+</head>
+<body>
+	<div class="advice">
+		<img src="../images/a15.png" id="mimg">
+		<div class="message">
+			<p id="abc">消息自右向左进行滚动，超出范围则消失，可以完成循环滚动过程。</p>
+		</div>
+	</div>
+	<div class="box" id="box">
+		<div class="slider" id="slider">
+			<div class="slide"><img src="../images/b5.png" alt=""></div>
+			<div class="slide"><img src="../images/b1.png" alt=""></div>
+			<div class="slide"><img src="../images/b2.png" alt=""></div>
+			<div class="slide"><img src="../images/b3.png" alt=""></div>
+			<div class="slide"><img src="../images/b4.png" alt=""></div>
+			<div class="slide"><img src="../images/b5.png" alt=""></div>
+			<div class="slide"><img src="../images/b1.png" alt=""></div>
+		</div>
+		<span id="left">&lt;</span>
+		<span id="right">&gt;</span>
+		<ul class="nav" id="nav">
+			<li class="active"></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+	</div>
+</body>
+<script>
+	var box=document.getElementById("box");
+	var oNavlist=document.getElementById("nav").children;
+	var slider=document.getElementById("slider");
+	var left=document.getElementById("left");
+	var right=document.getElementById("right");
+	var index =1;
+	var timer;
+	var isMoving=false;
+
+	var abc =document.getElementById("abc");
+	var intervalId=setInterval(function(){
+			var objStyle=getComputedStyle(abc);
+			console.log(abc.style.marginLeft);
+			 if(abc.style.marginLeft==-500+"px"){
+				abc.style.marginLeft=1200+"px";
+			}
+			abc.style.marginLeft=(parseInt(objStyle["marginLeft"])-1)+"px";
+	},5);
+
+	function next(){
+		if(isMoving){
+			return;
+		}
+		isMoving=true;
+		index++;
+		navChange();
+		animate(slider,{left:-1200*index},function(){
+			if(index===6){
+				slider.style.left="-1200px";
+				index=1;
+			}
+			isMoving=false;
+		});
+	}
+
+	function prev(){
+		if(isMoving){
+			return;
+		}
+		isMoving=true;
+		index--;
+		navChange();
+		animate(slider,{left:-1200*index},function(){
+			if(index===0){
+				slider.style.left="-6000px";
+				index=5;
+			}
+			isMoving=false;
+		});
+	}
+
+	var timer=setInterval(next,3000);
+
+	box.onmouseover=function(){
+		animate(left,{opacity:50});
+		animate(right,{opacity:50});
+		clearInterval(timer);
+	}
+
+	box.onmouseout=function(){
+		animate(left,{opacity:0});
+		animate(right,{opacity:0});
+		timer=setInterval(next,3000);
+	}
+
+	right.onclick=next;
+	left.onclick=prev;
+
+	for(var i=0;i<oNavlist.length;i++){
+		oNavlist[i].idx=i;
+		oNavlist[i].onclick=function(){
+			index=this.idx+1;
+			navChange();
+			animate(slider,{left:-1200*index});
+		}
+	}
+
+	function navChange(){
+		for(var i=0;i<oNavlist.length;i++){
+			oNavlist[i].className="";
+		}
+		if(index===6){
+			oNavlist[0].className="active";
+		}else if(index===0){
+			oNavlist[4].className="active";
+		}else{
+			oNavlist[index-1].className='active';
+		}
+	}
+</script>
+</html>
+
